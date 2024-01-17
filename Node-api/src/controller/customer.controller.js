@@ -5,20 +5,16 @@ var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
-const getAll = (req,res) =>{
-    var sql = "SELECT firstname,lastname,gender,password FROM customer";
-    db.query(sql,(err,result)=>{
-        if(err){
-            res.json({
-                message:err,
-                error:true
-            })
-        }else{
-            res.json({
-                Lsit : result
-            })
-        }
+const getAll = async (req,res) =>{
+    var sqlCustomer = "SELECT customer_id,firstname,lastname,username,gender,is_active,create_at FROM customer ORDER BY customer_id DESC";
+    var sqlProvince = "SELECT * FROM province";
+    var data = await db.query(sqlCustomer);
+    var dataProvince = await db.query(sqlProvince);
+    res.json({
+        data : data,
+        data_Province : dataProvince
     })
+    
 }
 
 const getone = (req,res) =>{

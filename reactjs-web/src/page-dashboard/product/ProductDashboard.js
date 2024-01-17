@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import request from '../../share/request'
 import { Table, Tag, Modal, Form, Row, Col, Input, Select, message } from 'antd';
-import { formateDateClient } from '../../share/helper';
+import { formateDateClient, isEmptyOrNull } from '../../share/helper';
 import './CategoryDashboard.css'
+import Search from 'antd/es/input/Search';
 const { Option } = Select;
 
 
@@ -14,14 +15,26 @@ export default function ProductDashboard() {
   const [visble, setVisible] = useState(false);
   const [productIdEdit, setProductIdEdit] = useState(null);
   const [form] = Form.useForm();
+  const [txtSearch, setTxtSearch] = useState("")
+  const [categorySearch, setCategorySearch] = useState(null)
+  const [productStatus, setProductStatus] = useState(null)
 
 
   useEffect(() => {
-    getList();
-  }, [])
+    if(txtSearch == "" && categorySearch == null && productStatus == null){
+      getList();
+    }
+  }, [txtSearch, categorySearch, productStatus])
 
   const getList = () => {
-    request("product","get").then(res => {
+    var param = "?txtSearch="+txtSearch
+    if(!isEmptyOrNull(categorySearch)){
+      param += "&categoryId=" + categorySearch
+    }
+    if(!isEmptyOrNull(productStatus)){
+      param += "&productStatus=" + productStatus
+    }
+    request("product"+param,"get",{}).then(res => {
       console.log(res)
       if(res){
         setList(res.data)
@@ -31,15 +44,12 @@ export default function ProductDashboard() {
     })
   }
 
-//   {
-//     "barcode": "P004",
-//     "product_name": "Hp",
-//     "quantity": "12",
-//     "price": "1000",
-//     "category": 10,
-//     "brand": 1,
-//     "description": "Hp brand"
-// }
+  const onClear = () => {
+    setTxtSearch("")
+    setCategorySearch(null)
+    setProductStatus(null)
+    // getList();
+  }
 
   const onCancelModal = () => {
     setVisible(false)
@@ -82,6 +92,7 @@ export default function ProductDashboard() {
         if(res){
           message.success(res.message)
           form.resetFields();
+          setProductIdEdit(null)
           setVisible(false);
           getList();
         }
@@ -124,10 +135,60 @@ export default function ProductDashboard() {
         <div className='flex mt-2'>
           <button onClick={() => setVisible(true)} className='bg-blue-400 Manrope text-sm uppercase text-white px-3 py-2 rounded-md hover:bg-blue-500 hover:duration-200'>New Product <i class="fa-solid fa-plus"></i></button>
         </div>
+        <div className='mt-3 space-x-3'>
+        <Search
+          value={txtSearch}
+          placeholder="Search..."
+          allowClear
+          style={{
+            width: 150,
+          }}
+          onChange={(event) => setTxtSearch(event.target.value)}
+        />
+
+        <Select 
+        value={categorySearch}
+        className='w-[150px]' 
+        allowClear placeholder="Category"
+        onChange={(value) => setCategorySearch(value)}
+        > 
+         {
+            categoryList?.map((item, index) => {
+              return (
+                <Option value={item.category_id} key={index}>{item.name}</Option>
+              )
+            })
+         }
+        </Select>
+
+        <Select 
+        value={productStatus}
+        onChange={(value) => setProductStatus(value)}
+        className='w-[100px]' 
+        allowClear 
+        placeholder="Status"
+        >
+          <Option value="1">Active</Option>
+          <Option value="0">Disable</Option>
+        </Select>
+
+        <button onClick={()=>getList()} className='bg-blue-400 Manrope text-sm text-white px-3 py-2 rounded-md hover:bg-blue-500 hover:duration-200'>Search</button>
+        <button onClick={()=> onClear()} className='bg-gray-100 Manrope text-sm text-blue-600 border px-3 py-2 rounded-md hover:bg-gray-200 hover:duration-200'>Clear</button>
+        
+
+        </div>
         <Table
         className='mt-3 shadow border bg-gray-100'
-        pagination={false}
         columns={[
+          {
+            key : "no",
+            title: "No",
+            className : "Manrope",
+            render : (text, record, index) => {
+              return index + 1
+            }
+            
+          },
           {
             key : "barcode",
             title: "Barcode",
@@ -152,6 +213,12 @@ export default function ProductDashboard() {
             key : "price",
             title: "Price",
             dataIndex: "price",
+            className : "Manrope"
+          },
+          {
+            key : "category",
+            title: "Category",
+            dataIndex: "category_name",
             className : "Manrope"
           },
           {
@@ -193,8 +260,8 @@ export default function ProductDashboard() {
             render : (text, record, index) =>{
               return (
                 <div className='space-x-2 px-2 border-l'>
-                  <button onClick={() => onEditClick(record)} className='bg-blue-400 text-sm uppercase text-white px-3 py-1 rounded-md hover:bg-blue-500 hover:duration-200'><i class="fa-solid fa-pen-to-square"></i></button>
-                  <button onClick={() => onDelete(record)} className='bg-red-400 text-sm uppercase text-white px-3 py-1 rounded hover:bg-red-500 hover:duration-200'><i class="fa-solid fa-trash-can"></i></button> 
+                  <button onClick={() => onEditClick(record)} className='bg-blue-400 text-sm uppercase text-white px-2 py-1 rounded-md hover:bg-blue-500 hover:duration-200'><i class="fa-solid fa-pen-to-square"></i></button>
+                  <button onClick={() => onDelete(record)} className='bg-red-400 text-sm uppercase text-white px-2 py-1 rounded hover:bg-red-500 hover:duration-200'><i class="fa-solid fa-trash-can"></i></button> 
                 </div>
               )
             }
@@ -219,7 +286,7 @@ export default function ProductDashboard() {
                       className='Manrope'
                       label="Barcode"
                       name="barcode"
-                      
+                      rules={[{ required: true, message: 'Please input your barcode!' }]}
                     >
                       <Input allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='barcode' />
                     </Form.Item>
@@ -230,6 +297,7 @@ export default function ProductDashboard() {
                         className='Manrope'
                         label="Product Name"
                         name="product_name"
+                        rules={[{ required: true, message: 'Please input your product name!' }]}
                       >
                       <Input allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='product name' />
                     </Form.Item>
@@ -242,6 +310,7 @@ export default function ProductDashboard() {
                     className='Manrope'
                     label="Quantity"
                     name="quantity"
+                    rules={[{ required: true, message: 'Please input your quantity!' }]}
                   >
                     <Input allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='quantity' />
                   </Form.Item>
@@ -252,6 +321,7 @@ export default function ProductDashboard() {
                       className='Manrope'
                       label="Price"
                       name="price"
+                      rules={[{ required: true, message: 'Please input your price!' }]}
                      
                     >
                     <Input allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='price' />
@@ -263,10 +333,12 @@ export default function ProductDashboard() {
                 className='Manrope'
                 label="Category"
                 name="category"
+                rules={[{ required: true, message: 'Please select your category!' }]}
               >
               <Select
                 placeholder="Select category"
                 allowClear={true}
+                rules={[{ required: true, message: 'Please select your category!' }]}
               >
                 {
                   categoryList?.map((item, index) => {
@@ -315,6 +387,7 @@ export default function ProductDashboard() {
                       className='Manrope'
                       label="Description"
                       name="description"
+                      rules={[{ required: true, message: 'Please input your description!' }]}
                     >
                     <Input allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='description' />
                   </Form.Item>
@@ -323,7 +396,7 @@ export default function ProductDashboard() {
 
            <Form.Item className='border-t'>
               <div className='space-x-3 mt-3' style={{float: "right"}}>
-                <button className='border Manrope text-sm uppercase text-gray-600 px-3 py-2 rounded-md hover:bg-blue-100 hover:duration-200'>Cancel</button>
+                <button onClick={onCancelModal} className='border Manrope text-sm uppercase text-gray-600 px-3 py-2 rounded-md hover:bg-blue-100 hover:duration-200'>Cancel</button>
                 <button onClick={()=> form.resetFields()} className='border Manrope text-sm uppercase text-gray-600 px-3 py-2 rounded-md hover:bg-blue-100 hover:duration-200'>Clear</button>
                 <button type='submit' className='bg-green-400 Manrope text-sm uppercase text-white px-3 py-2 rounded-md hover:bg-green-500 hover:duration-200'> {productIdEdit == null ? "Save" : "Update"} </button>
               </div>

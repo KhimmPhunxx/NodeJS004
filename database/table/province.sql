@@ -188,3 +188,19 @@ INSERT INTO `role_permission` (`role_id`, `permission_id`) VALUES
 
 (4, 13),
 (4, 14);
+
+INSERT INTO `permission` (`name`, `code`, `group`) VALUES
+('Create', 'crate.employee', 'employee'),
+('Read', 'read.employee', 'employee'),
+('Update', 'update.employee', 'employee'),
+('Delete', 'delete.employee', 'employee'),
+
+
+INSERT INTO `role_permission` (`role_id`, `permission_id`) VALUES
+
+-- role admin
+
+(1, 17),
+(1, 18),
+(1, 19),
+(1, 20);

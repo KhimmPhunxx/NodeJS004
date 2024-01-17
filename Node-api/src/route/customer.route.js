@@ -3,8 +3,8 @@ const customerController = require("../controller/customer.controller");
 
 // const route = "/api/employee";
 const customer = (app,base_route) => {
-    app.get(base_route,userGuard, customerController.getAll);
-    app.get(`${base_route}/:id`,userGuard( "read.customer"), customerController.getone); // prarams
+    app.get(base_route,userGuard("read.customer" ),  customerController.getAll);
+    app.get(`${base_route}/:id`,userGuard("read.customer"), customerController.getone); // prarams
     app.post(base_route,userGuard("create.customer"), customerController.create);
     app.post(`${base_route}/auth/login`,userGuard, customerController.login);
     app.put(base_route,userGuard("update.customer",), customerController.update);

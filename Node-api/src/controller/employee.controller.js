@@ -7,7 +7,7 @@ const { KEY_TOKEN } = require("../util/service");
 const { getPermissionByUser } = require("./auth.controller");
 
 const getAll = (req,res) => {
-    var sql = "SELECT * FROM employee";
+    var sql = "SELECT employee_id, role_id, firstname, lastname, tel, email, base_salary, address, province, country, creat_at  FROM employee";
     db.query(sql,(err,result)=>{
         if(err) { // has error
             res.json({
@@ -16,7 +16,9 @@ const getAll = (req,res) => {
             })
         }else{ // success
             res.json({
-                list : result,
+                user: req.user,
+                user_id : req.user.employee_id ,
+                list_employee : result,
                 
             })
         } 

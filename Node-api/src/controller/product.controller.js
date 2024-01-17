@@ -3,30 +3,78 @@ const db = require("../util/db");
 const { isEmptyOrNull } = require("../util/service");
 
 const getlist = async (req, res) => {
-    let sql = "SELECT * FROM product ORDER BY product_id DESC";
-    var slqCategory = "SELECT * FROM category";
-    var barnd = [
-        {
-            id : 1,
-            name : "Apple"
-        },
-        {
-            id : 2,
-            name : "ASUS"
-        },
-        {
-            id : 1,
-            name : "Dell"
+    try {
+        const { page, categoryId, txtSearch, productStatus} =  req.query;
+ 
+        // var param = [categoryId];
+
+        // var limitItem = 5;
+        // var offset1 = (page - 1) * limitItem;
+        let select = "SELECT p.*, c.name as category_name FROM product p"+
+        " INNER JOIN category c ON (p.category_id = c.category_id) ";
+
+        // var where = " WHERE p.category_id = IFNULL (p.category_id) ";
+
+        // if(!isEmptyOrNull(txtSearch)){
+        //     where += " AND p.barcode = '?' " //+ txtSearch+ "'";
+        //     param.push(txtSearch);
+        // }
+
+        // if(!isEmptyOrNull(productStatus)){
+        //     where += " AND p.is_active = ? " //+ (isEmptyOrNull(productStatus) ? 0 : 1 )
+        //     param.push(productStatus);
+        // }
+
+        var where = "";
+        if(!isEmptyOrNull(categoryId)){
+            where += " p.category_id = "+categoryId;
         }
-    ]
-    // join table category pagination
-    const data = await db.query(sql);
-    const dataCategory = await db.query(slqCategory);
-    res.json({
-        data: data,
-        data_category: dataCategory,
-        data_brand : barnd
-    })
+        if(!isEmptyOrNull(txtSearch)){
+            where += (where != "" ? " AND " : "") + " p.barcode = '"+ txtSearch+ "'";
+        }
+        if(!isEmptyOrNull(productStatus)){
+            where += (where != "" ? " AND " : "") + " p.is_active = "+ productStatus;
+        }
+        if(where != ""){
+            where = " WHERE "+where;
+        }
+
+        var order = " ORDER BY p.product_id DESC";
+        // var limit = " LIMIT "+limitItem+" OFFSET "+offset1+"";
+        var sql = select + where + order 
+        const data = await db.query(sql);
+        var barnd = [
+            {
+                id : 1,
+                name : "Apple"
+            },
+            {
+                id : 2,
+                name : "ASUS"
+            },
+            {
+                id : 1,
+                name : "Dell"
+            }
+        ]
+        
+        var slqCategory = "SELECT * FROM category";
+        const dataCategory = await db.query(slqCategory);
+        res.json({
+            data: data,
+            data_category: dataCategory,
+            data_brand : barnd,
+            bodyData : req.body,
+            queryData : req.query,
+
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "Internal Server Error",
+            error: error
+        })
+    }
 }
 
 const getone = async (req, res) => {
