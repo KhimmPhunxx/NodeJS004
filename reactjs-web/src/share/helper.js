@@ -1,6 +1,5 @@
 // 
 import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
 
 export const isEmptyOrNull = (value) => {
     return (value == null || value == "" || value == undefined) ? true : false;
@@ -39,6 +38,10 @@ export const isPermission = (code_permission) => {
     }
 }
 
+export const Config = {
+    image_path : "http://localhost:8080/project/image_preycode_g1/"
+}
+
 export const getAccessToken = () => {
     var access_token = localStorage.getItem('access_token');
     if(!isEmptyOrNull(access_token)){
@@ -59,7 +62,7 @@ export const getRefreshToken = () => {
 
 export const formateDateClient = (date) => {
     if(!isEmptyOrNull(date)){
-        return moment(date).format("hh:mm DD-MM-YYYY");
+        return moment(date).format("dddd Do MMMM YYYY");
     }
     return null;
 }

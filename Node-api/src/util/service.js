@@ -1,4 +1,8 @@
 // 
+exports.KEY_TOKEN = "KHSDAB@#$12345r23";
+exports.KEY_REFRESH = "@#4523FKSREN^%#@#";
+
+const multer = require("multer");
 
 exports.isEmptyOrNull = (value) => {
     if (value === null || value === undefined || value === "") {
@@ -14,6 +18,26 @@ exports.invoiceNumber = (number) => {
     return "INV" + ivoice;
 }
 
-exports.KEY_TOKEN = "KHSDAB@#$12345r23";
-exports.KEY_REFRESH = "@#4523FKSREN^%#@#";
 
+exports.upload = multer ({
+    storage : multer.diskStorage({
+        destination : function (req,file,callback){
+            callback(null, "C:/xampp/htdocs/project/image_preycode_g1")
+        },
+        filename : function (req, file, cb){
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+            cb(null, file.fieldname + '-' + uniqueSuffix)
+        }
+    }),
+    limits : {
+        fileSize : (1024 * 1024) * 5
+    },
+    fileFilter : (req, file, cb) => {
+        console.log(file)
+        if(file.mimetype !== "image/png" && file.mimetype !== "image/jpg" && file.mimetype !== "image/jpeg"){
+            cb(null, false)
+        }else{
+            cb(null, true)
+        }
+    }
+})

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import request from '../../share/request'
 import { Table, Tag, Modal, Form, Row, Col, Input, Select, message } from 'antd';
-import { formateDateClient, isEmptyOrNull } from '../../share/helper';
+import { formateDateClient, isEmptyOrNull, Config } from '../../share/helper';
 import './CategoryDashboard.css'
 import Search from 'antd/es/input/Search';
 const { Option } = Select;
@@ -18,6 +18,7 @@ export default function ProductDashboard() {
   const [txtSearch, setTxtSearch] = useState("")
   const [categorySearch, setCategorySearch] = useState(null)
   const [productStatus, setProductStatus] = useState(null)
+  const [imageUpload, setImageUpload] = useState(null)
 
 
   useEffect(() => {
@@ -58,18 +59,22 @@ export default function ProductDashboard() {
   }
 
   const onFinish = (item) => {
-    console.log(item)
     if(productIdEdit == null){
-      var param = {
-        "category_id": item.category,
-        "barcode": item.barcode,
-        "name":  item.product_name,
-        "quantity": item.quantity,
-        "price": item.price,
-        "image":  item.image, 
-        "description" : item.description
-      }
-      request("product","post",param).then(res => {
+      var formData = new FormData();
+      formData.append("category_id",item.category)
+      formData.append("barcode",item.barcode)
+      formData.append("name",item.product_name)
+      formData.append("quantity",item.quantity)
+      formData.append("price",item.price)
+      formData.append("description",item.description)
+      formData.append("image_emp",imageUpload,imageUpload.filename)
+
+      request("product","post",formData,{
+        headers : {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+       
         if(res){
           message.success(res.message)
           form.resetFields();
@@ -77,28 +82,34 @@ export default function ProductDashboard() {
           getList();
         }
       })
-    }else{
-      var param = {
-        "product_id": productIdEdit,
-        "category_id": item.category,
-        "barcode": item.barcode,
-        "name":  item.product_name,
-        "quantity": item.quantity,
-        "price": item.price,
-        "image":  item.image, 
-        "description" : item.description
-      }
-      request("product","put",param).then(res => {
+    }
+    else{
+      var formData = new FormData();
+      formData.append("product_id",productIdEdit)
+      formData.append("category_id",item.category)
+      formData.append("barcode",item.barcode)
+      formData.append("name",item.product_name)
+      formData.append("quantity",item.quantity)
+      formData.append("price",item.price)
+      formData.append("description",item.description)
+      formData.append("image_emp",imageUpload,imageUpload.filename)
+
+      request("product","put",formData,{
+        headers : {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+       
         if(res){
           message.success(res.message)
           form.resetFields();
-          setProductIdEdit(null)
           setVisible(false);
           getList();
         }
       })
     }
   }
+
 
   const onEditClick = (item) => {
     console.log(item)
@@ -110,12 +121,11 @@ export default function ProductDashboard() {
       quantity: item.quantity,
       price: item.price,
       brand: item.brand_id,
-      image: item.image,
-      description: item.description
+      description: item.description,
+      imageUpload : imageUpload
     });
     setVisible(true)
   }
-
   const onDelete = (item) => {
     console.log(item)
     var param = {
@@ -127,6 +137,11 @@ export default function ProductDashboard() {
         getList();
       }
     })
+  }
+
+  const onChnageFile = (event) => {
+    var file = event.target.files[0]
+    setImageUpload(file)
   }
 
   return (
@@ -172,7 +187,7 @@ export default function ProductDashboard() {
           <Option value="0">Disable</Option>
         </Select>
 
-        <button onClick={()=>getList()} className='bg-blue-400 Manrope text-sm text-white px-3 py-2 rounded-md hover:bg-blue-500 hover:duration-200'>Search</button>
+        <button onClick={()=> getList()} className='bg-blue-400 Manrope text-sm text-white px-3 py-2 rounded-md hover:bg-blue-500 hover:duration-200'>Search</button>
         <button onClick={()=> onClear()} className='bg-gray-100 Manrope text-sm text-blue-600 border px-3 py-2 rounded-md hover:bg-gray-200 hover:duration-200'>Clear</button>
         
 
@@ -216,15 +231,24 @@ export default function ProductDashboard() {
             className : "Manrope"
           },
           {
+            key : "image",
+            title: "Image",
+            dataIndex: "image",
+            render : (value) => {
+              return (
+                <img 
+                className='rounded-sm'
+                src={Config.image_path+value} 
+                width={30}
+                height={20} />
+              )
+            }
+          },
+          {
             key : "category",
             title: "Category",
             dataIndex: "category_name",
             className : "Manrope"
-          },
-          {
-            key : "image",
-            title: "Image",
-            dataIndex: "image",
           },
           {
             key : "description",
@@ -329,68 +353,80 @@ export default function ProductDashboard() {
               </Col>
             </Row>
 
-            <Form.Item
-                className='Manrope'
-                label="Category"
-                name="category"
-                rules={[{ required: true, message: 'Please select your category!' }]}
-              >
-              <Select
-                placeholder="Select category"
-                allowClear={true}
-                rules={[{ required: true, message: 'Please select your category!' }]}
-              >
-                {
-                  categoryList?.map((item, index) => {
-                    return (
-                      <Option value={item.category_id} key={index}>{item.name}</Option>
-                    )
-                  })
-                }
-
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-                className='Manrope'
-                label="Brand"
-                name="brand"
-              >
-              <Select
-                placeholder="Select brand"
-                allowClear={true}
-              >
-                {
-                  brand?.map((item, index) => {
-                    return (
-                      <Option value={item.id} key={index}>{item.name}</Option>
-                    )
-                  })
-                }
-
-              </Select>
-            </Form.Item>
-
             <Row gutter={10}>
               <Col span={12}>
                   <Form.Item
                     className='Manrope'
-                    label="Image"
-                    name="image"
+                    label="Category"
+                    name="category"
+                    rules={[{ required: true, message: 'Please select your category!' }]}
                   >
-                    <Input allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='image' />
-                  </Form.Item>
-              </Col>
+                  <Select
+                    placeholder="Select category"
+                    allowClear={true}
+                    // rules={[{ required: true, message: 'Please select your category!' }]}
+                  >
+                    {
+                      categoryList?.map((item, index) => {
+                        return (
+                          <Option value={item.category_id} key={index}>{item.name}</Option>
+                        )
+                      })
+                    }
 
+                  </Select>
+                </Form.Item>
+              </Col>
               <Col span={12}>
+                  <Form.Item
+                    className='Manrope'
+                    label="Brand"
+                    name="brand"
+                  >
+                  <Select
+                    placeholder="Select brand"
+                    allowClear={true}
+                  >
+                    {
+                      brand?.map((item, index) => {
+                        return (
+                          <Option value={item.id} key={index}>{item.name}</Option>
+                        )
+                      })
+                    }
+
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={10}>
+              <Col span={24}>
                   <Form.Item
                       className='Manrope'
                       label="Description"
                       name="description"
                       rules={[{ required: true, message: 'Please input your description!' }]}
                     >
-                    <Input allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='description' />
+                    <Input.TextArea allowClear={true} className='border border-gray-600 p-2 rounded' placeholder='description' />
                   </Form.Item>
+              </Col>
+            </Row>
+            
+            <Row>
+              <Col span={12}>
+                <Form.Item
+                  pan={12}
+                  className='Manrope'
+                  label="Choose Image"
+                  name="image"
+                >
+                  <Input type='file' 
+                  allowClear={true} 
+                  className='border border-gray-600 p-2 rounded' 
+                  onChange={onChnageFile}
+                  />
+                </Form.Item>
               </Col>
             </Row>
 

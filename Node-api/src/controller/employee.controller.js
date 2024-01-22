@@ -7,7 +7,7 @@ const { KEY_TOKEN } = require("../util/service");
 const { getPermissionByUser } = require("./auth.controller");
 
 const getAll = (req,res) => {
-    var sql = "SELECT employee_id, role_id, firstname, lastname, tel, email, base_salary, address, province, country, creat_at  FROM employee";
+    var sql = "SELECT employee_id, role_id, firstname, lastname, tel, email, base_salary, address, province, country, creat_at, image_empl FROM employee ORDER BY employee_id DESC";
     db.query(sql,(err,result)=>{
         if(err) { // has error
             res.json({
@@ -160,16 +160,21 @@ const setPassword = async (req,res) => {
 }
 
 const create = (req,res) => {
-    const {
+    var {
         firstname,
         lastname,
         tel,
+        password,
         email,
         base_salary,
         address,
         province,
         country
     } = req.body;
+   var filename = null
+    if(req.file){
+        filename = req.file.filename
+    } 
 
     var message = {}
     if(isEmptyOrNull(firstname)){
@@ -188,17 +193,20 @@ const create = (req,res) => {
         })
         return;
     }
+    var passwordGenerate = bcrypt.hashSync(password,10);
 
-    var sql = "INSERT INTO employee (firstname,lastname,tel,email,base_salary,address,province,country) VALUES (?,?,?,?,?,?,?,?)";
+    var sql = "INSERT INTO employee (firstname,lastname,tel,password,email,base_salary,address,province,country,image_empl) VALUES (?,?,?,?,?,?,?,?,?,?)";
     var param_create = [
         firstname,
         lastname,
         tel,
+        passwordGenerate,
         email,
         base_salary,
         address,
         province,
         country,
+        filename
     ];
     db.query(sql,param_create,(err,result)=>{
         if(err) { // has error
@@ -215,7 +223,7 @@ const create = (req,res) => {
     })
 }
 
-const update = (req,res) => {
+const update = async (req,res) => {
     const {
         employee_id,
         firstname,
@@ -227,6 +235,10 @@ const update = (req,res) => {
         province,
         country
     } = req.body;
+    var filename = null
+    if(req.file){
+        filename = req.file.filename
+    }
 
     var message = {}
     if(isEmptyOrNull(employee_id)){
@@ -248,8 +260,7 @@ const update = (req,res) => {
         })
         return;
     }
-
-    var sql = "UPDATE employee SET firstname = ?,lastname = ?,tel = ?,email = ?,base_salary = ?,address = ?,province = ?,country = ? WHERE employee_id = ?";
+    var sql = "UPDATE employee SET firstname = ?,lastname = ?,tel = ?,email = ?,base_salary = ?,address = ?,province = ?,country = ?, image_empl = ? WHERE employee_id = ?";
     var param_update = [
         firstname,
         lastname,
@@ -259,20 +270,14 @@ const update = (req,res) => {
         address,
         province,
         country,
+        filename,
         employee_id,
+
     ];
-    db.query(sql,param_update,(err,result)=>{
-        if(err) { // has error
-            res.json({
-                message : err,
-                error : true
-            })
-        }else{ // success
-            res.json({
-                message : result.affectedRows ? "Employee Update success" : "Employee id in not found" ,
-                data : result,
-            })
-        } 
+    var data = await db.query(sql,param_update);
+    res.json({
+        message : "Employee Update success",
+        data : data,
     })
 }
 

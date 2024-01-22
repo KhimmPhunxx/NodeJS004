@@ -19,6 +19,7 @@ const order_status = require("./src/route/order_status.route");
 const product = require("./src/route/product.route");
 const cart = require("./src/route/cart.route");
 const order = require("./src/route/order.route");
+const province = require("./src/route/province.route");
 
 category(app, "/api/category"); // call function
 employee(app, "/api/employee"); // call function
@@ -29,6 +30,7 @@ order_status(app, "/api/order_status"); // call function
 product(app ,"/api/product"); // call function
 cart(app ,"/api/cart"); // call function
 order(app ,"/api/order"); // call function
+province(app ,"/api/province"); // call function
 
 app.listen(8081, () => {
   console.log('http localhost:8081');

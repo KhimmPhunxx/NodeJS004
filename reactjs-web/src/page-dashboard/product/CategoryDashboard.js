@@ -19,7 +19,11 @@ export default function CategoryDashboard() {
     getList();
   }, [])
   const getList = () => {
-    request("category","get").then(res => {
+    request("category","get",{
+      // headears : {
+      //   'Content-Type': 'application/json',
+      // }
+    }).then(res => {
       if(res){
         setList(res.data_category)
         console.log(res)
@@ -134,7 +138,7 @@ export default function CategoryDashboard() {
                             <td className='py-0 border-l px-3'>{item.status}</td>
                             <td className='py-0 border-l px-3'>{formateDateClient(item.create)}</td>
                             <td className='space-x-2 py-2 px-3 border-l'>
-                              <button disabled={!isPermission("update.category")} onClick={()=>onClickEdit(item)} className='bg-green-400 text-sm uppercase text-white px-3 py-1 rounded-md hover:bg-green-500 hover:duration-200'><i class="fa-solid fa-pen-to-square"></i></button>
+                              <button disabled={!isPermission("update.category")} onClick={()=> onClickEdit(item)} className='bg-green-400 text-sm uppercase text-white px-3 py-1 rounded-md hover:bg-green-500 hover:duration-200'><i class="fa-solid fa-pen-to-square"></i></button>
                               <button disabled={!isPermission("delete.category")} onClick={()=> onClickBtnDelete(item)} className='bg-red-400 text-sm uppercase text-white px-3 py-1 rounded-md hover:bg-red-500 hover:duration-200'><i class="fa-solid fa-trash-can"></i></button> 
                             </td>
                           </tr>

@@ -1,6 +1,6 @@
 
 
-////
+////;
 const ct = require("../controller/order_status.controller")
 const order_status = (app,base_route) => {
     app.get(base_route, ct.getAll);

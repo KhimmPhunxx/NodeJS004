@@ -1,17 +1,8 @@
 import './App.css';
 import { BrowserRouter,Routes, Route } from 'react-router-dom';
-import AboutPage from './page/about/AboutPage';
-import CustomerPage from './page/customer/CustomerPage';
-import UserPage from './page/user/UserPage';
-import ProductPage from './page/product/ProductPage';
-import CategoryPage from './page/category/CategoryPage';
-import PageNotFound from './page/rout-not-found/PageNotFound';
-import LoginPage from './page/login/LoginPage';
 import Layout from './component/layout/Layout';
 import LayoutDashboard from './component/layout/LayoutDashboard';
 
-
-import UserDashboard from './page-dashboard/user/UserRoleDashboard';
 
 import CartDashoard from './page-dashboard/cart/CartDashoard';
 import HomePage from './page/home/HomePage';
@@ -43,6 +34,7 @@ import TopSaleDash from './page-dashboard/report/TopSaleDash';
 import SaleSummaryDash from './page-dashboard/report/SaleSummaryDash';
 import SoldByCategoryDash from './page-dashboard/report/SoldByCategoryDash';
 import SoldByProductDash from './page-dashboard/report/SoldByProductDash';
+import ProfileEmployeeDashboard from './page-dashboard/profile/ProfileEmployeeDashboard';
 
 
 function App() {
@@ -53,14 +45,6 @@ function App() {
           {/* Web-FrontEnd */}
           <Route path="/" element={<Layout />}>
               <Route path="" element={<HomePage/>} />
-              <Route path='/category' element={<CategoryPage/>} />
-              {/* <Route path='/about' element={<AboutPage/>} />
-              <Route path='/customer' element={<CustomerPage/>} />
-              <Route path='/user' element={<UserPage/>} />
-              <Route path='/product' element={<ProductPage/>} />
-              <Route path='/cart' element={<CartDashoard/>} />
-              <Route path='/login' element={<LoginPage/>} />
-              <Route path='*' element={<PageNotFound/>} /> */}
           </Route>
 
           {/* Web-Backend */}
@@ -69,6 +53,7 @@ function App() {
                 <Route path='customer' element={<CustomerDashboard/>}/>
                 <Route path='employee' element={<EmployeeDashboard/>}/>
                 <Route path='order' element={<OrderDashboard/>}/>
+                <Route path='profile' element={<ProfileEmployeeDashboard/>}/>
                 
                 {/* Product */}
                 <Route path='product/category' element={<CategoryDashboard/>}/>

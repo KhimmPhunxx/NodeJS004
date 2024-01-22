@@ -52,10 +52,6 @@ export default function CustomerDashboard() {
       if(res){
         getlist()
         setVisibleConfirm(false)
-        Modal.success({	
-          title: 'Success',
-          content: 'You have successfully change Status customer.',
-        })
       }else{
         message.error("Something went wrong")
       }
@@ -71,7 +67,7 @@ export default function CustomerDashboard() {
     var data = values
     request("customer", "post", data).then((res) => {
       if(res){
-       onCloseModal()
+        onCloseModal()
         getlist()
       }else{
         message.error("Something went wrong")
@@ -81,7 +77,7 @@ export default function CustomerDashboard() {
 
   return (
     <>
-        <div>CustomerDashboard {list.length} </div>
+   
         <div className='flex mt-2'>
           <button onClick={() => setVisible(true)} className='bg-blue-400 Manrope text-sm uppercase text-white px-3 py-2 rounded-md hover:bg-blue-500 hover:duration-200'>New <i class="fa-solid fa-plus"></i></button>
         </div>
@@ -151,7 +147,7 @@ export default function CustomerDashboard() {
                 return (
                   <div className='space-x-2 px-2 border-l'>
                     <button onClick={() => onEditClick(record)} className='bg-blue-400 text-sm uppercase text-white px-3 py-1 rounded-md hover:bg-blue-500 hover:duration-200'><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button onClick={() => onDelete(record)} className='bg-red-400 text-sm uppercase text-white px-3 py-1 rounded hover:bg-red-500 hover:duration-200'><i class="fa-solid fa-trash-can"></i></button> 
+                    <button onClick={() => onDelete(record)} className='bg-red-400 text-sm uppercase text-white px-3 py-1 rounded hover:bg-red-500 hover:duration-200'><i class="fa-solid fa-right-to-bracket"></i></button> 
                   </div>
                 )
               },

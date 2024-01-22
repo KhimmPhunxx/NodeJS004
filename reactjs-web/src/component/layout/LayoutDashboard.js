@@ -10,7 +10,7 @@ import { MdCategory, MdGolfCourse, MdHome, MdList, MdPayment, MdPeople, MdProduc
 import { IoIosPeople } from "react-icons/io";
 import PC_logo from '../../assets/logo/PreyCode_logo.png'
 import { Dropdown } from 'antd';
-import { getUser } from '../../share/helper';
+import { Config, getUser } from '../../share/helper';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -59,12 +59,13 @@ const LayoutDashboard = () => {
     const navigate = useNavigate();
 
     const [collapsed, setCollapsed] = useState(false);
+    const [visible, setVisible] = useState(false);
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
     useEffect(() => {
-
       const isLogin = localStorage.getItem('isLogin');
       if(isLogin == "0"){
           navigate('/dashboard/login');
@@ -84,24 +85,16 @@ const LayoutDashboard = () => {
       {
         key: '1',
         label: (
-          <a className='Manrope' target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-            My Account
+          <a onClick={()=> navigate('/dashboard/profile')} className='Manrope' rel="noopener noreferrer" >
+            My Profile
           </a>
         ),
       },
       {
         key: '2',
         label: (
-          <a className='Manrope' target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+          <a className='Manrope' onClick={""} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
             Change Password
-          </a>
-        ),
-      },
-      {
-        key: '3',
-        label: (
-          <a className='Manrope' target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-            Adress
           </a>
         ),
       },
@@ -109,76 +102,59 @@ const LayoutDashboard = () => {
           key: '4',
           label: (
             <a className='Manrope' onClick={handleLogout}>
-             Logout
+             Logout <i class="fa-solid fa-arrow-right-from-bracket ml-4"></i>
             </a>
           ),
         },
     ];
 
     const user = getUser();
-
     return (
         <Layout className='Manrope' style={{ minHeight: '100vh' }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-            <div className="demo-logo-vertical" />
-            <Menu onClick={onChangeMenu} className='Manrope' theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
-        </Sider>
-        <Layout>
-
-            <Header style={{ padding: 15, background: colorBgContainer }} className='flex justify-between'>
-                <div className='flex'>
-                    <img className='h-9 mr-3' src={PC_logo} alt="" />
-                    <h1 className='Manrope text-2xl font-bold text-gray-800'>PREYCODE Backend</h1>  
-                </div>
-                <div className='flex space-x-6'>
-                    <div className='mt-[-8px]'>
-                        <form className="flex items-center">   
-                            <input type="text" className="Manrope bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 block w-[300px] p-2.5 " placeholder='search here...' required />
-                           
-                            <button type="submit" className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800">
-                                <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                                </svg>
-                                <span className="sr-only">Search</span>
-                            </button>
-                        </form>
-
-                    </div>
-                    <div className='mt-[-12px]'>
-                        <Badge count={4}>
-                                {/* <NotificationFilled className='text-[28px] text-gray-300' /> */}
-                                <i class="fa-solid fa-bell text-[28px] text-gray-400"></i>
-                        </Badge>
-                    </div>
-                    <div className='mt-[-20px] space-x-6'>
-                        
-                        <Badge count={2}>
-                            <Avatar shape="square" size="small" />
-                        </Badge>
-                        
-                        <Dropdown menu={{ items:itemsProfile }} placement="bottomRight" arrow>
-                            <Button className='Manrope font-bold'>{user.firstname+"-"+user.lastname} </Button>
-                        </Dropdown>
-                    </div>
-                   
-                </div>
-            </Header>
-            <Content style={{ margin: '10px 10px' }}>
-            <div
-                style={{
-                padding: 5,
-                minHeight: 360,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-                }}
-            >
-                <Outlet />
-            </div>
-            </Content>
-            <Footer style={{ textAlign: 'center' }}>
-                <p className='Manrope text-md'>Welcome to PreyCode Backend Store ©2024 Created by PreyCode</p>
-            </Footer>
-        </Layout>
+          <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+              <div className="demo-logo-vertical" />
+              <Menu onClick={onChangeMenu} className='Manrope' theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+          </Sider>
+          <Layout>
+              <Header style={{ padding: 15, background: colorBgContainer }} className='flex justify-between'>
+                  <div className='flex'>
+                      <img className='h-9 mr-3' src={PC_logo} alt="" />
+                      <h1 className='Manrope text-2xl font-bold text-gray-800'>PREYCODE Backend</h1>  
+                  </div>
+                  <div className='flex space-x-6'>
+                      <div className='mt-[-12px]'>
+                          <Badge count={4}>
+                              <i class="fa-solid fa-bell text-[28px] text-gray-400"></i>
+                          </Badge>
+                      </div>
+                      <div className='mt-[-20px] space-x-3 cursor-pointer'>
+                          <Badge>
+                              <Avatar onClick={()=> navigate('/dashboard/profile')} src={Config.image_path+user.image_empl}  shape="square" size="medium" />
+                          </Badge>
+                          
+                          <Dropdown menu={{ items:itemsProfile }} placement="bottomRight" arrow>
+                              <Button className='Manrope font-bold'>{user.firstname+"-"+user.lastname} </Button>
+                          </Dropdown>
+                      </div>
+                    
+                  </div>
+              </Header>
+              <Content style={{ margin: '10px 10px' }}>
+              <div
+                  style={{
+                  padding: 5,
+                  minHeight: 360,
+                  background: colorBgContainer,
+                  borderRadius: borderRadiusLG,
+                  }}
+              >
+                  <Outlet />
+              </div>
+              </Content>
+              <Footer style={{ textAlign: 'center' }}>
+                  <p className='Manrope text-md'>Welcome to PreyCode Backend Store ©2024 Created by PreyCode</p>
+              </Footer>
+          </Layout>
         </Layout>
     );
 };

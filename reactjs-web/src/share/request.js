@@ -8,7 +8,19 @@ export const config = {
     image_path : "",
     version : 1
 }
-export default function request(url,method,data,new_token= null) {
+
+// export const fileRequest = (url="",data={}) => {
+//     return axios({
+//         url : config.base_server + url,
+//         method : "post",
+//         data : data,
+//         headers : {
+//             'Content-Type': 'multipart/form-data'
+//         }
+//     })
+// }
+
+export default function request(url="",method="get",data={},new_token= null) {
     let access_token = getAccessToken();
     if(new_token != null){
         access_token = new_token;
@@ -19,8 +31,8 @@ export default function request(url,method,data,new_token= null) {
             method : method,
             data : data,
             headers : {
-              Authorization : "Bearer "+access_token,
-            },
+                'Authorization' : "Bearer "+access_token,
+            }
         }).then(res => {
             return res.data;
         }).catch(err => {

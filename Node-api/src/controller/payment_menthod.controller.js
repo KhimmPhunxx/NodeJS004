@@ -1,7 +1,7 @@
 const db = require("../util/db");
 
 const getAll = async (req,res) =>{
-    const sql = "SELECT * FROM payment_method";
+    const sql = "SELECT * FROM payment_method ORDER BY payment_method_id DESC";
     const data = await db.query(sql);
     res.json({
         data : data
@@ -10,12 +10,16 @@ const getAll = async (req,res) =>{
 
 const create = async (req,res) =>{
     const {name, code} = req.body;
-    const sql = "INSERT INTO payment_method(name, code) VALUES (?,?)";
-    const param = [name, code];
+    var filename = null
+    if(req.file){ // true when have upload file from client
+        filename = req.file.filename // get filename for store to database
+    }
+    const sql = "INSERT INTO payment_method(name, code, image) VALUES (?,?,?)";
+    const param = [name, code, filename];
     const data = await db.query(sql,param);
     res.json({
         message:"Product added successfully",
-        data : data
+        data : data,
     })
 }
 

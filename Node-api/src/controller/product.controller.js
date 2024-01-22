@@ -4,7 +4,7 @@ const { isEmptyOrNull } = require("../util/service");
 
 const getlist = async (req, res) => {
     try {
-        const { page, categoryId, txtSearch, productStatus} =  req.query;
+        const { categoryId, txtSearch, productStatus} =  req.query;
  
         // var param = [categoryId];
 
@@ -12,6 +12,7 @@ const getlist = async (req, res) => {
         // var offset1 = (page - 1) * limitItem;
         let select = "SELECT p.*, c.name as category_name FROM product p"+
         " INNER JOIN category c ON (p.category_id = c.category_id) ";
+        // var select = "SELECT * FROM product";
 
         // var where = " WHERE p.category_id = IFNULL (p.category_id) ";
 
@@ -64,8 +65,6 @@ const getlist = async (req, res) => {
             data: data,
             data_category: dataCategory,
             data_brand : barnd,
-            bodyData : req.body,
-            queryData : req.query,
 
         })
     } catch (error) {
@@ -75,6 +74,12 @@ const getlist = async (req, res) => {
             error: error
         })
     }
+
+    // var sql = "SELECT * FROM product";
+    // const data = await db.query(sql);
+    // res.json({
+    //     data: data
+    // })
 }
 
 const getone = async (req, res) => {
@@ -95,10 +100,12 @@ const create = async (req, res) => {
         name,
         quantity,
         price,
-        image,
         description,
     } = req.body;
-
+    var filename = null
+    if(req.file){ // true when have upload file from client
+        filename = req.file.filename // get filename for store to database
+    }
     let message = {}
     if (isEmptyOrNull(category_id)){message.category_id = "category_id is required"}
     if (isEmptyOrNull(barcode)){message.barcode = "barcode is required"}
@@ -115,7 +122,7 @@ const create = async (req, res) => {
     }
 
     let sql = "INSERT INTO product (category_id,barcode,name,quantity,price,image,description) VALUES (?,?,?,?,?,?,?)";
-    let param = [category_id,barcode,name,quantity,price,image,description];
+    let param = [category_id,barcode,name,quantity,price,filename,description];
     let data = await db.query(sql, param);
     res.json({
         message: "Product added successfully",
@@ -131,9 +138,12 @@ const update = async (req, res) => {
         name,
         quantity,
         price,
-        image,
         description,
     } = req.body;
+    var filename = null
+    if(req.file){ // true when have upload file from client
+        filename = req.file.filename // get filename for store to database
+    }
 
     let message = {}
     if (isEmptyOrNull(product_id)){message.productid = "product_id is required"}
@@ -152,7 +162,7 @@ const update = async (req, res) => {
     }
 
     let sql = "UPDATE product SET category_id = ?,barcode = ?,name = ?,quantity = ?,price = ?,image = ?,description = ? WHERE product_id = ?";
-    let param = [category_id,barcode,name,quantity,price,image,description,product_id];
+    let param = [category_id,barcode,name,quantity,price,filename,description,product_id];
     let data = await db.query(sql, param);
     res.json({
         message: "Product updated successfully",

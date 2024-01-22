@@ -1,31 +1,78 @@
 // 
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
+import request from "../../share/request";
 
-export const data = [
-  ["Year", "Sales", "Expenses", "Profit"],
-  ["2014", 1000, 400, 200],
-  ["2015", 1170, 460, 250],
-  ["2016", 660, 1120, 300],
-  ["2017", 1030, 540, 350],
-];
+// export const data = [
+//   ["Year", "Employee", "Customer", "Product"],
+//   ["2021", 1000, 400, 200],
+//   ["2022", 1170, 460, 250],
+//   ["2023", 660, 1120, 300],
+//   ["2024", {}, 540, 350],
+// ];
 
 export const options = {
   chart: {
-    title: "Company Performance",
-    subtitle: "Sales, Expenses, and Profit: 2014-2017",
+    title: "NexSfift Solution",
+    subtitle: "Employee, User, and Product: 2024-2027",
   },
 };
 
 export const DashboardSaleChart = () => {
+  const [listEmp, setListEmp] = useState([]);
+  const [listCustomre, setListCustomer] = useState([]);
+  const [listProduct, setListProduct] = useState([]);
+
+  useEffect(() => {
+    getListemp();
+    getListCustomer();
+    getListProduct();
+  }, []);
+
+  const getListemp = () => {
+    request("employee", "get").then((res) => {
+      if (res) {
+        setListEmp(res.list_employee);
+      }
+    });
+  }
+
+  const getListCustomer = () => {
+    request("customer", "get").then((res) => {
+      if (res) {
+        setListCustomer(res.data);
+      }
+    });
+  }
+
+  const getListProduct = () => {
+    request("product", "get").then((res) => {
+      if (res) {
+        setListProduct(res.data);
+      }
+    });
+  }
+
+
+
+  const data = [
+    ["Year", "Employee", "User", "Product"],
+    ["2024", listEmp.length,listCustomre.length, listProduct.length],
+    ["2025", 0, 0, 0],
+    ["2026", 0, 0, 0],
+    ["2027", 0, 0, 0],
+  ];
+
+
   return (
-    <Chart
-      chartType="Bar"
-      width="100%"
-      height="400px"
-      data={data}
-      options={options}
-    />
+    <main className="p-3">
+        <Chart
+        chartType="Bar"
+        width="100%"
+        height="600px"
+        data={data}
+        options={options}
+      />
+    </main>
   );
 }

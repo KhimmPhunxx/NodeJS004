@@ -204,3 +204,6 @@ INSERT INTO `role_permission` (`role_id`, `permission_id`) VALUES
 (1, 18),
 (1, 19),
 (1, 20);
+
+INSERT INTO `permission` (`name`, `code`, `group`) VALUES
+('Create', 'crate.', 'employee'),
