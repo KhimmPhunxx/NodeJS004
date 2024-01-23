@@ -12,20 +12,7 @@ const getlist = async (req, res) => {
         // var offset1 = (page - 1) * limitItem;
         let select = "SELECT p.*, c.name as category_name FROM product p"+
         " INNER JOIN category c ON (p.category_id = c.category_id) ";
-        // var select = "SELECT * FROM product";
-
-        // var where = " WHERE p.category_id = IFNULL (p.category_id) ";
-
-        // if(!isEmptyOrNull(txtSearch)){
-        //     where += " AND p.barcode = '?' " //+ txtSearch+ "'";
-        //     param.push(txtSearch);
-        // }
-
-        // if(!isEmptyOrNull(productStatus)){
-        //     where += " AND p.is_active = ? " //+ (isEmptyOrNull(productStatus) ? 0 : 1 )
-        //     param.push(productStatus);
-        // }
-
+        
         var where = "";
         if(!isEmptyOrNull(categoryId)){
             where += " p.category_id = "+categoryId;
@@ -74,12 +61,6 @@ const getlist = async (req, res) => {
             error: error
         })
     }
-
-    // var sql = "SELECT * FROM product";
-    // const data = await db.query(sql);
-    // res.json({
-    //     data: data
-    // })
 }
 
 const getone = async (req, res) => {
@@ -169,20 +150,6 @@ const update = async (req, res) => {
         data: data
     })
 
-    // "category_id": 10,
-    // "barcode": "P005",
-    // "name": "MSI 2023",
-    // "quantity": -10,
-    // "price": 1399,
-    // "image": "",
-    // "description": "SSD 512TBG ,RAM 16 GB Dispay 16Inch",
-    // "is_active": "0",
-    // "create_at": "2024-01-10T06:46:59.000Z"
-
-    // let sql = "UPDATE product SET category_id = ?,barcode = ?,name = ?,quantity = ?,price = ?,image = ?,description = ? WHERE product_id = ?";
-    // let param = [category_id,barcode,name,quantity,price,image,description,product_id];
-    
-     
 }
 
 const remove = async (req, res) => {

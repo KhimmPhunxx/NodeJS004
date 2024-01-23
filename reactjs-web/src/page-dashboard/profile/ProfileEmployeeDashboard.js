@@ -21,14 +21,14 @@ export default function ProfileEmployeeDashboard() {
         <main className='w-full h-[600px] border p-10 flex'>
             <div className='w-[25%] h-full'>
                 <div className='w-[300px] rounded-full h-[400px] bg-red-300'>
-                    <img className='w-full rounded-full shadow h-full object-cover' src={Config.image_path+user.image_empl} alt='image'/> 
+                    <img className='w-full rounded-full shadow border-8 border-blue-500 h-full object-cover' src={Config.image_path+user.image_empl} alt='image'/> 
                 </div>
-                <h1 className='text-center Manrope mt-3 text-5xl font-bold'>{user.firstname+ " " + user.lastname}</h1>
+                <h1 className='text-center text-gray-500 Manrope mt-3 text-5xl font-bold'>{user.firstname+ " " + user.lastname}</h1>
             </div>
             <div className="w-[73%] ml-[2%] h-full shadow border rounded-lg">
                 <div className='w-full h-10 bg-gray-200 rounded-t-lg p-2'> <p className='Manrope font-bold text-md'>My Profile</p> </div>
                 <div className='p-5'>
-                    <h1 className='Manrope text-2xl text-gray-500 font-bold border-b-2 pb-2'>Information Employee</h1>
+                    <h1 className='Manrope text-2xl text-gray-500 font-bold border-b-2 pb-2 '>Information Employee</h1>
                     <div className='flex'>
                         <div className='mt-2'>
                             <h3 className='Manrope text-xl text-gray-500'>Firstname</h3>

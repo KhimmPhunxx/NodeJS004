@@ -1,38 +1,26 @@
-
 import React, { useEffect, useState } from 'react'
 import request from '../../share/request'
-import { Table } from 'antd'
 import { formateDateClient } from '../../share/helper'
-import "./order.css"
+import { Table } from 'antd'
 
-export default function OrderDashboard() {
+export default function OrderDetailDash() {
+    const [list,setList] = useState([])
 
-  const [list, setList] = useState([])
+    useEffect(() => {
+        getList()
+    }, [])
 
-  useEffect(() => {
-    getList()
-  }, [])
-
-  const getList = () => {
-     request("order","get").then(res => {
-          console.log(res)
-          if(!res.error){
-              setList(res.data)
-          }
-      }) 
+    const getList = () => {
+        request("order_detail","get").then(res => {
+            console.log(res)
+            if(!res.error){
+                setList(res.data)
+            }
+        })
     }
-
-  const onEdite = (record) => {
-    console.log(record)
-  }
-
-  const onDelete = (record) => {
-    console.log(record)
-  }
 
   return (
     <>
-        <div>OrderDashboard</div>
         <Table
           className='mt-2'
           columns={[
@@ -51,51 +39,21 @@ export default function OrderDashboard() {
             },
             {
               className: "Manrope",
-              title: 'Payment',
-              dataIndex: 'name_pm',
-              key: 'name_pm',
-            },
-            {
-              className: "Manrope",
               title: 'Invoice',
               dataIndex: 'invoice_id',
               key: 'invoice_id',
             },
             {
               className: "Manrope",
-              title: 'Total',
-              dataIndex: 'order_total',
-              key: `order_total`
+              title: 'Quantity',
+              dataIndex: 'quantity',
+              key: `quantity`
             },
             {
               className: "Manrope",
-              title: 'Comment',
-              dataIndex: 'comment',
-              key: `comment`
-            },
-            {
-              className: "Manrope",
-              title: 'Firstname',
-              dataIndex: 'firstname',
-              key: `firstname`
-            },
-            {
-              className: "Manrope",
-              title: 'Lastname',
-              dataIndex: 'lastname',
-              key: `lastname`
-            },
-            {
-              className: "Manrope",
-              title: 'Tel',
-              dataIndex: 'tel',
-              key: `tel`
-            },
-            {
-              className: "Manrope",
-              title: 'Address',
-              dataIndex: 'address_des',
-              key: `address_des`
+              title: 'Price',
+              dataIndex: 'price',
+              key: `price`
             },
             {
               className: "Manrope",

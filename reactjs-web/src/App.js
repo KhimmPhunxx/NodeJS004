@@ -35,6 +35,7 @@ import SaleSummaryDash from './page-dashboard/report/SaleSummaryDash';
 import SoldByCategoryDash from './page-dashboard/report/SoldByCategoryDash';
 import SoldByProductDash from './page-dashboard/report/SoldByProductDash';
 import ProfileEmployeeDashboard from './page-dashboard/profile/ProfileEmployeeDashboard';
+import OrderDetailDash from './page-dashboard/order/OrderDetailDash';
 
 
 function App() {
@@ -53,6 +54,8 @@ function App() {
                 <Route path='customer' element={<CustomerDashboard/>}/>
                 <Route path='employee' element={<EmployeeDashboard/>}/>
                 <Route path='order' element={<OrderDashboard/>}/>
+                <Route path='order_detail' element={<OrderDetailDash/>}/>
+                <Route path='add_to_cart' element={<CartDashoard/>}/>
                 <Route path='profile' element={<ProfileEmployeeDashboard/>}/>
                 
                 {/* Product */}

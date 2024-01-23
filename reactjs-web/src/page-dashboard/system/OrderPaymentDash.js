@@ -82,7 +82,7 @@ export default function OrderPaymentDash() {
           className: "Manrope",
           key: 'name',
           title: 'Name',
-          dataIndex: 'name',
+          dataIndex: 'name_pm',
         },
         {
           className: "Manrope",
@@ -138,7 +138,7 @@ export default function OrderPaymentDash() {
                 <Form.Item
                   className='Manrope'
                   label="Name"
-                  name="name"
+                  name="name_pm"
                   rules={[{ required: true, message: 'Please input your name!' }]}
                 >
                   <input className='Manrope border w-full px-2 py-1 rounded-md' placeholder='name...' />

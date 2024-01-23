@@ -14,7 +14,6 @@ const getCartByCustomer = async (req,res) =>{
     res.json({
         List : data
     })
-    
 }
 
 const addCart = async (req,res) => {

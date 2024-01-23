@@ -9,7 +9,10 @@ const generateInvoiceNo = async () =>{
 }
 
 const getAll = async (req,res) =>{
-    var sql = "SELECT * FROM `order`";
+    var sql = "SELECT od.*, os.name, pmt.name_pm FROM `order` od "+
+    " INNER JOIN order_status os ON (od.order_status_id = os.order_status_id)" +
+    " INNER JOIN payment_method pmt ON (od.payment_method_id = pmt.payment_method_id) " +
+    " ORDER BY od.order_id DESC"; 
     const data = await db.query(sql);
     res.json({
         data : data,

@@ -120,7 +120,7 @@ export default function EmployeeDashboard() {
           <button onClick={()=> setVisible(true)} className='bg-blue-400 Manrope text-sm uppercase text-white px-3 py-2 rounded-md hover:bg-blue-500 hover:duration-200'>New <i class="fa-solid fa-plus"></i></button>
         </div>
         <Table
-        className='mt-2'
+          className='mt-2'
           columns={[
             { 
               className: "Manrope",

@@ -17,22 +17,6 @@ const getone = async (req,res) =>{
     res.json({
         data_category : data_category,
     })
-
-    // ----------use Promise function -----------
-    // var id = req.params.id;
-    // var sql = "SELECT * FROM category WHERE category_id = ?";
-    // db.query(sql,[id],(err,result)=>{
-    //     if(err){
-    //         res.json({
-    //             message:err,
-    //             error:true
-    //         })
-    //     }else{
-    //         res.json({
-    //             data:result
-    //         })
-    //     }
-    // })
 }
 
 const create = (req,res) =>{

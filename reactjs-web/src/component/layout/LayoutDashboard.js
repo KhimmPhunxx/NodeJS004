@@ -5,7 +5,8 @@ import {
 import { Avatar, Badge, Button,  Layout, Menu, theme } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 import './LayoutDashboard.css'
-import { FaBook, FaCartArrowDown,  FaLuggageCart,  FaMap, FaPeopleArrows, } from 'react-icons/fa';
+import { GiStabbedNote } from "react-icons/gi";
+import { FaBook, FaCartArrowDown,  FaCartPlus,  FaLuggageCart,  FaMap, FaPeopleArrows, } from 'react-icons/fa';
 import { MdCategory, MdGolfCourse, MdHome, MdList, MdPayment, MdPeople, MdProductionQuantityLimits, MdRollerShades, MdSignalWifiStatusbar1Bar, MdSummarize } from 'react-icons/md';
 import { IoIosPeople } from "react-icons/io";
 import PC_logo from '../../assets/logo/PreyCode_logo.png'
@@ -28,6 +29,8 @@ const items = [
     getItem('Customer', '/dashboard/customer', <FaPeopleArrows />),
     getItem('Employee', '/dashboard/employee', <IoIosPeople />),
     getItem('Order', '/dashboard/order', <FaCartArrowDown />),
+    getItem('Order Detail', '/dashboard/order_detail', <GiStabbedNote />),
+    getItem('Add to Cart', '/dashboard/add_to_cart', <FaCartPlus/>),
 
     getItem('Product', '/dashboard/product', <FaLuggageCart />, [
       getItem('Category', '/dashboard/product/category', <MdCategory />),
@@ -113,10 +116,10 @@ const LayoutDashboard = () => {
         <Layout className='Manrope' style={{ minHeight: '100vh' }}>
           <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
               <div className="demo-logo-vertical" />
-              <Menu onClick={onChangeMenu} className='Manrope' theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+              <Menu onClick={onChangeMenu} className='Manrope sticky top-0' theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
           </Sider>
           <Layout>
-              <Header style={{ padding: 15, background: colorBgContainer }} className='flex justify-between'>
+              <Header style={{ padding: 15, background: colorBgContainer }} className='flex justify-between sticky top-0 z-50 shadow-sm rounded-lg'>
                   <div className='flex'>
                       <img className='h-9 mr-3' src={PC_logo} alt="" />
                       <h1 className='Manrope text-2xl font-bold text-gray-800'>PREYCODE Backend</h1>  

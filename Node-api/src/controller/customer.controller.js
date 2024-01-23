@@ -36,10 +36,6 @@ const getone = (req,res) =>{
 
 const create = (req,res) =>{
     db.beginTransaction()
-    // check is exist
-    // parametor require
-    // insert 2 table customer and customer_address
-    // password bcrypt
     let {
         username, // store telephone
         password,
@@ -133,7 +129,7 @@ const login =  async (req,res) =>{
                 permission:[],
                 token:""
             }
-            var access_token = jwt.sign({data:{...obj}},KEY_TOKEN,{expiresIn:"1h"});
+            var access_token = jwt.sign({data:{...obj}},KEY_TOKEN);
 
             res.json({
                ...obj,
